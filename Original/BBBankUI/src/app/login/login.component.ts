@@ -1,28 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import AuthService from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
-export class LoginComponent implements OnInit {
-
+export default class LoginComponent {
   constructor(private authService: AuthService, private router: Router) { }
 
-  ngOnInit(): void {
-  }
   login() {
     this.authService.login()
-      .subscribe(user => {
-        console.log("Is Login Success: " + user);
+      .subscribe((user) => {
+        console.log(`Is Login Success: ${user}`);
 
         if (user) {
-          this.router.navigate(['/'])
-          .then(() => {
-            window.location.reload();
-          });
+          if (user.roles[0] === 'bank-manager') {
+            this.router.navigate(['/bank-manager'])
+              .then(() => {
+                window.location.reload();
+              });
+          }
+          if (user.roles[0] === 'account-holder') {
+            this.router.navigate(['/account-holder'])
+              .then(() => {
+                window.location.reload();
+              });
+          }
         }
       });
   }
