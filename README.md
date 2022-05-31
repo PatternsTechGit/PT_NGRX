@@ -88,9 +88,12 @@ ng add @ngrx/schematics@latest
 npm install @ngrx/effects --save
 ```
 
-# Create Global App Store 
+# Create Global Store 
+The global store will contains the loggedIn user relation information and will be accessible throughout the application. The `Login component` will be dispatching the `loginSuccess` action whereas the `Toolbar component` will be subscribing the `loggedInUser` object of Global store.
 
-## Setting Up Auth Action
+ Here are the steps to start with: 
+
+## Step 1 : Setting Up Auth Action
 
 We will create a new folder `store` in app directory which will contains the global state of store.
 
@@ -125,7 +128,7 @@ export const loginSuccess = createAction(
   
 ```
 
-## Setting Up Global Reducer
+##  Step 2 : Setting Up Global Reducer
 
 We will create a new folder `reducers` in store directory and then create a new file named `appstate.reducers.ts` which will contain the reducer functions for each global actions e.g. `loginSuccess`, `logout` and `appLoad`.
 
@@ -183,7 +186,7 @@ export const reducers: ActionReducerMap<{ globalState: AppState }> = {
   globalState: authReducer,
 };
 ```
-## Setting Up Action Types
+##  Step 3 : Setting Up Action Types
 
 Create a new file in store folder named `auth.action.types.ts`. In this file we will be Grouping the auth actions so we can access them easily.  
 
@@ -198,7 +201,7 @@ import * as AuthActions from './auth.actions';
 export { AuthActions };
 ```
 
-## Setting Up Auth Effects 
+## Step 4 :  Setting Up Auth Effects 
 
 Create a new file in store folder named `auth.effects.ts`. this file will contain the side effects which is used for  interacting with external resources directly through services.
 
@@ -253,7 +256,7 @@ export class AuthEffects {
 }
 ```
 
-## Setting Up Selectors
+##  Step 5 :  Setting Up Selectors
 
 Create a new file in store folder named `auth.selectors.ts`. This file will contain multiple selectors that will emit a new value to the store only if the value was changed. 
 
@@ -329,7 +332,7 @@ export const loggedInUserName = createSelector(
 
 ```
 
-## Setting Up App Module
+## Step 6 :  Setting Up App Module
 Go to `app.module.ts` and added reducer reference in imported `StoreModule` to Plugging in the reducers for root module.
 Also we will be injecting Effects of this module in `EffectsModule` 
 
@@ -357,30 +360,18 @@ Add `storeModule` and `effectsModule` in imports as below
 
 
 
-## Dispatch loginSuccess Action
+##  Step 7 : Dispatch loginSuccess Action
 
 Go to `login.component.ts` and create `Store<AppState>` object in constructor.
 Call the `loginSuccess` action on login event as below :
 
 ```ts 
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { Store } from '@ngrx/store';
-import { AppState } from "../store/reducers/appstate.reducers"
-import { AuthActions } from '../store/auth.action.types';
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
-})
+
 export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router,
     private store: Store<AppState>) { }
 
-  ngOnInit(): void {
-  }
   login() {
     this.authService.login()
       .subscribe(user => {
@@ -404,7 +395,7 @@ export class LoginComponent implements OnInit {
 
 ```
 
-## Subscribe Global State & Dispatch logout Action
+## Step 8 :  Subscribe Global State & Dispatch logout Action
 
 Go to `toolbar.component.ts` and create `Store<AppState>` object in constructor.
 Subscribe the global Appstate and select `loggedInUser` to get the loggedInUser from state. 
@@ -412,33 +403,13 @@ Subscribe the global Appstate and select `loggedInUser` to get the loggedInUser 
 Call the `logout` action on logout event as below :
 
 ```ts 
-import {
-  Component, Input, OnInit,
-} from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
-import { Store } from '@ngrx/store';
-import AppUser from '../models/app-user';
-import AuthService from '../services/auth.service';
-import { AppState } from "../../store/reducers/appstate.reducers"
-import { Subscription } from 'rxjs';
-import { AuthActions } from '../../store/auth.action.types';
-import {loggedInUser} from '../../store/auth.selectors';
-@Component({
-  selector: 'app-toolbar',
-  templateUrl: './toolbar.component.html',
-  styleUrls: ['./toolbar.component.css'],
-})
+
 export default class ToolbarComponent implements OnInit {
-  // @ts-ignore: Object is possibly 'null'.
-  @Input() inputSideNav: MatSidenav;
-  loggedInUser?: AppUser;
+   loggedInUser?: AppUser;
   sub: Subscription;
-  constructor(private authService: AuthService,private store: Store<AppState>) {
-    
-  }
+  constructor(private authService: AuthService,private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    // this.loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
      this.sub = this.store
        .select(loggedInUser)
        .subscribe((loggedInUser: any) => {
@@ -452,26 +423,28 @@ export default class ToolbarComponent implements OnInit {
      this.store.dispatch(AuthActions.logout());
    }
 }
-
 ```
 
 
-## Setting Up App Component
+##  Step 9 : Setting Up App Component
 Go to `app.component.ts` and create `Store<AppState>` object in constructor.
 As the page will be reloaded after login success, Once the page is reloaded then saved NgRx state is disposed automatically. So we will get the loggedInUser value from local storage on `ngOnInit` and then set the value using `appLoad` dispatch action.
 
 as below :
 
 ```ts
-  constructor(private store: Store<AppState>) {}
-  
+  export default class AppComponent implements OnInit {
+    constructor(private store: Store<AppState>) {}
+    
   ngOnInit(): void {
-    this.isUserLoggedIn = localStorage.getItem('loggedInUser') != null;
     let UserLoggedIn = localStorage.getItem('loggedInUser');
     this.store.dispatch(
       AuthActions.appLoad({ loggedInUser: JSON.parse(UserLoggedIn) })
     );
   }
+
+  title = 'BBBankUI';
+}
 ```
 
 
