@@ -428,9 +428,7 @@ export default class ToolbarComponent implements OnInit {
 
 ##  Step 9 : Setting Up App Component
 Go to `app.component.ts` and create `Store<AppState>` object in constructor.
-As the page will be reloaded after login success, Once the page is reloaded then saved NgRx state is disposed automatically. So we will get the loggedInUser value from local storage on `ngOnInit` and then set the value using `appLoad` dispatch action.
-
-as below :
+As the page will be reloaded after login success, Once the page is reloaded then saved NgRx state is disposed automatically. So we will get the loggedInUser value from local storage on `ngOnInit` and then set the value using `appLoad` dispatch action as below :
 
 ```ts
   export default class AppComponent implements OnInit {
