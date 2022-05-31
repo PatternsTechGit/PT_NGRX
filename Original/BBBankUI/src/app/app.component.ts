@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AuthActions } from './store/auth.action.types';
+import { AppState } from './store/reducers/appstate.reducers';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +11,15 @@ import { Component, OnInit } from '@angular/core';
 export default class AppComponent implements OnInit {
   isUserLoggedIn?: boolean;
 
+  constructor(private store: Store<AppState>) {
+    
+  }
   ngOnInit(): void {
     this.isUserLoggedIn = localStorage.getItem('loggedInUser') != null;
+    let UserLoggedIn = localStorage.getItem('loggedInUser');
+    this.store.dispatch(
+      AuthActions.appLoad({ loggedInUser: JSON.parse(UserLoggedIn) })
+    );
   }
 
   title = 'BBBankUI';
