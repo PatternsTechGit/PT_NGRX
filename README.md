@@ -41,6 +41,8 @@ Previously we scaffolded a new Angular application in which we have integrated
 * SideNav having links which are navigating to these components.
 * We developed a base structure of an api solution in Asp.net core that have just two api functions GetLast12MonthBalances & GetLast12MonthBalances/{userId} which returns data of the last 12 months total balances.
 * There is an authorization service with two functions Login & Logout, The login function is setting up a hardcoded user properties (Name,Email,Roles) and storing it in local storage where as logout function is removing that user object from local storage.
+* Links on the sideNav are shown or hidden based on the logged in user's role
+*  We also have a toolbar that shows Logged in User's Name.
 
 The Dashboard page shows the received data for API as below 
 
@@ -49,11 +51,11 @@ The Dashboard page shows the received data for API as below
 
 ## In this exercise
 
- * We will implement `store` for global components. 
+ * We will implement `store` for global state. 
  * We will implement user related `Actions` and `Reducers` functions against each actions.
  * We will implement `Effects` against the required action.
  * We will implement multiple `selectors` for LoggedInUser.
- * We will implement separate `store` for shared components. 
+ * We will implement separate `store` for shared state. 
  * We will implement dashboard related `Actions` and `Reducers` functions against each shared actions.
  * We will implement `Effects` against the required shared action.
  * We will implement multiple `selectors` for required data.
@@ -89,7 +91,7 @@ npm install @ngrx/effects --save
 ```
 
 # Create Global Store 
-The global store will contains the loggedIn user relation information and will be accessible throughout the application. The `Login component` will be dispatching the `loginSuccess` action whereas the `Toolbar component` will be subscribing the `loggedInUser` object of Global store.
+The global store will contains the loggedIn user related information and will be accessible throughout the application. The `Login component` will be dispatching the `loginSuccess` action whereas the `Toolbar component` will be subscribing the `loggedInUser` selectors of Global store.
 
  Here are the steps to start with: 
 
@@ -424,9 +426,70 @@ export default class ToolbarComponent implements OnInit {
    }
 }
 ```
+##  Step 9 : Setting Up SideNav Component
+Go to `sidenav.component.ts` and create `Store<AppState>` object in constructor. we will create `isLoggedInUserManager` and `isLoggedInUserAccountHolder`observables as below :
+
+```ts
+export default class SidenavComponent implements OnInit {
+  isLoggedInUserManager$: Observable<boolean>;
+  isLoggedInUserAccountHolder$: Observable<boolean>;
+  constructor(private authService: AuthService,
+    private store: Store<AppState>) {
+
+  }
+
+  ngOnInit(): void {
+    // in this case we don't need the value of a select observable instead we need to assign select observable to our local observable variable.
+    // instead of doing subscribe here we will use  | async pipe in html to auto subscribe to results of these select observables. 
+    this.isLoggedInUserManager$ = this.store
+    .pipe(
+      select(isLoggedInUserManager)
+    );
+    this.isLoggedInUserAccountHolder$ = this.store
+    .pipe(
+      select(isLoggedInUserAccountHolder)
+    );
+  }
+}
+```
+ Then we will use async pipe in html to auto subscribe to results as below :
+
+ ```html
+ <div class="sidenav">
+    <div class="logo">
+        <a href="/" class="simple-text logo-mini">
+            <div class="logo-img">
+                <img src="./assets/images/angular2-logo-white.png" />
+            </div>
+        </a>
+        <a *ngIf="isLoggedInUserAccountHolder$ | async" href="/account-holder" class="simple-text logo-normal">
+            BBBank
+        </a>
+        <a *ngIf="isLoggedInUserManager$ | async" href="/bank-manager" class="simple-text logo-normal">
+            BBBank
+        </a>
+    </div>
+    <ul class="nav">
+        <li *ngIf="isLoggedInUserAccountHolder$ | async"><a [routerLink]="['/account-holder']"><i class="active fas fa-chart-line"></i> Dashboard</a></li>
+        <li *ngIf="isLoggedInUserManager$ | async"><a [routerLink]="['/account-holder']"><i class="active fas fa-chart-line"></i> Dashboard</a></li>
+        <div>
+            <li *ngIf="isLoggedInUserAccountHolder$ | async"><a
+                    [routerLink]="['account-holder/transfer-funds', { fromAccountId: '111', toAccountId: '222' }]"><i
+                        class="fas fa-random"></i> Transfer Funds</a></li>
+            <li *ngIf="isLoggedInUserAccountHolder$ | async"><a [routerLink]="['account-holder/deposit-funds']"><i
+                        class="fas fa-money-check-alt"></i>Deposit Funds</a></li>
+            <li *ngIf="isLoggedInUserManager$ | async"><a [routerLink]="['bank-manager/create-account']"><i
+                        class="fas fa-user"></i> Create New Account</a></li>
+            <li *ngIf="isLoggedInUserManager$ | async"><a [routerLink]="['bank-manager/manage-accounts']"><i
+                        class="fas fa-users"></i> Manage Accounts</a></li>
+        </div>
+    </ul>
+</div>
+ ```
 
 
-##  Step 9 : Setting Up App Component
+
+##  Step 10 : Setting Up App Component
 Go to `app.component.ts` and create `Store<AppState>` object in constructor.
 As the page will be reloaded after login success, Once the page is reloaded then saved NgRx state is disposed automatically. So we will get the loggedInUser value from local storage on `ngOnInit` and then set the value using `appLoad` dispatch action as below :
 
