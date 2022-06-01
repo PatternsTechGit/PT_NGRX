@@ -9,7 +9,7 @@ NgRx is made up of 5 main components - Store, Actions, Reducers, Selectors, and 
 
 NgRx uses the Redux concept of unidirectional data flow, where all application data goes through the same lifecycle. This unidirectional data flow makes the application's state more predictable and thus easier to understand. This flow only applies to the state management layer and is not to be confused with the unidirectional data flow of the presentation layer. The following diagram shows the state management lifecycle in NgRx.
 
-![111](https://user-images.githubusercontent.com/100709775/171422012-1688daef-4b20-452e-b776-1c3224ded22f.PNG)
+![01_ngrx-how-it-works](https://user-images.githubusercontent.com/100709775/169290425-4942c6c5-4dcf-455c-89f3-3b6a13dcfc97.png)
 
 
 
@@ -47,7 +47,8 @@ Previously we scaffolded a new Angular application in which we have integrated
 
 The Dashboard page shows the received data for API as below 
 
-![1234](https://user-images.githubusercontent.com/100709775/169295406-a807dad7-ff7b-4356-bb50-bf816b24b41d.png)
+![111](https://user-images.githubusercontent.com/100709775/171422012-1688daef-4b20-452e-b776-1c3224ded22f.PNG)
+
 
 
 ## In this exercise
