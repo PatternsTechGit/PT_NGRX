@@ -1,5 +1,5 @@
 export default class AppUser {
-  id!: number;
+  id!: string;
 
   firstName!: string;
 
