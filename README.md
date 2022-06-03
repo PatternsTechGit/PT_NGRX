@@ -12,7 +12,6 @@ NgRx uses the Redux concept of unidirectional data flow, where all application d
 ![01_ngrx-how-it-works](https://user-images.githubusercontent.com/100709775/169290425-4942c6c5-4dcf-455c-89f3-3b6a13dcfc97.png)
 
 
-
 ## Store
 
 You can think of this as a client-side database. The Store in NgRx acts as the application's single source of truth. It reflects the current state of the app.
@@ -428,6 +427,7 @@ export default class ToolbarComponent implements OnInit {
    }
 }
 ```
+
 ##  Step 9 : Setting Up SideNav Component
 Go to `sidenav.component.ts` and create `Store<AppState>` object in constructor. we will create `isLoggedInUserManager` and `isLoggedInUserAccountHolder`observables as below :
 
@@ -509,6 +509,394 @@ As the page will be reloaded after login success, Once the page is reloaded then
   title = 'BBBankUI';
 }
 ```
+ # Create Shared Store 
+The shared store will contains the last12MonthsBalances information. The `Sharded component` will be dispatching the `loadLast12MonthsBalances` action whereas the `Dashboard component` will be subscribing the `loadLast12MonthsBalances` selectors and displaying the result.
+
+ Here are the steps to start with: 
+
+## Install Shared Module store
+
+We will create a store under shared directory as below :
+
+ ```ts
+ ng g store shared/Shared --module shared.module.ts
+ ```
+We will install the `schematics` in shared module as below :
+
+ ```ts
+  ng generate @ngrx/schematics:store shared/Shared --module shared.module.ts
+ ```
+
+## Step 1 : Setting Up Dashboard Action
+
+We will create a new folder `store` in app directory which will contains the shared state of store.
+
+Create a new file in store folder named `dashboard.actions.ts`. This file will contains the dashboard related actions in one file. 
+
+Here `loadLast12MonthsBalances` action will be used for getting last 12 months data which will be dispatched from shared component.
+
+Here is the code as below :
+
+```ts
+import { createAction, props } from "@ngrx/store";
+import { LineGraphData } from "../models/line-graph-data";
+
+  // This is example of an action which is more of a command than an event. 
+  export const loadLast12MonthsBalances = createAction(
+    '[SharedComponent] On Component Load',
+    props<{ userId: string }>()
+  );
+
+  export const last12MonthsBalancesLoaded = createAction(
+    '[DashBoard Effect] Last 12 Month Balances Loaded',
+    props<{ lineGraphData: LineGraphData }>(),
+  );
+
+  export const last12MonthsBalancesLoadError = createAction(
+    '[DashBoard Effect] Last 12 Month Balances Load Error'
+  );
+```
+
+##  Step 2 : Setting Up Shared Reducer
+
+We will create a new folder `reducers` in store directory and then create a new file named `shared.reducers.ts` which will contain the reducer functions for each shared actions e.g. `last12MonthsBalancesLoaded`.
+
+Here is the code as below : 
+
+```ts
+import {
+  ActionReducer,
+  ActionReducerMap,
+  createFeatureSelector,
+  createReducer,
+  createSelector,
+  MetaReducer,
+  on
+} from '@ngrx/store';
+import { LineGraphData } from '../../models/line-graph-data';
+import { DashBoardActions } from '../action-types';
+
+  // all of the data related to Shared Module will be stored inside "shared" property inside the store.
+  export const sharedFeatureKey = 'shared';
+
+  export interface SharedState {
+    last12MonthsBalances: LineGraphData;
+  }
+
+  
+export const initialSharedState: SharedState = {
+  last12MonthsBalances: null
+};
+
+export const sharedReducer = createReducer(
+  initialSharedState,
+  on(DashBoardActions.last12MonthsBalancesLoaded, (state, action) => {
+      return {
+        last12MonthsBalances: action.lineGraphData
+      };
+   })
+);
+
+```
+##  Step 3 : Setting Up Dashboard Action Types
+
+Create a new file in store folder named `action-types.ts`. In this file we will be Grouping the dashboard actions so we can access them easily.  
+
+Here is the code as below : 
+
+```ts
+// Grouping the related actions so we can access them easily. 
+// So we import everything from the auth.actions file
+import * as DashBoardActions from './dashboard.actions';
+// Now we will have these actions grouped under DashboardActions throughout the application and available through intellisense  
 
 
- 
+export { DashBoardActions }
+```
+
+## Step 4 :  Setting Up Dashboaed Effects 
+
+Create a new file in store folder named `dashboard.effects.ts`. this file will contain the side effects which is used for interacting with external resources directly through services.
+
+In our case we will calling the `getLast12MonthBalances` method of our `TransactionService` to get the data from API.
+
+Here is the code as below : 
+
+```ts
+import { Injectable } from "@angular/core";
+import { createEffect, ofType, Actions } from "@ngrx/effects";
+import { Store } from "@ngrx/store";
+import { concatMap, map, catchError, of } from "rxjs";
+import TransactionService from "../services/transaction.service";
+import { DashBoardActions } from "./action-types";
+import { SharedState } from "./reducers/shared.reducers";
+
+@Injectable()
+export class DashBoardEffects {
+    loadLast12MonthsBalances$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(DashBoardActions.loadLast12MonthsBalances),
+      concatMap((action) =>
+        this.transactionService.getLast12MonthBalances(action.userId).pipe(
+/*           tap((data) => {
+            this.notifyService.showSuccess(
+              'Last Three Year Balances Loaded',
+              'Success'
+            );
+          }), */
+          map((lineGraphData) =>
+          DashBoardActions.last12MonthsBalancesLoaded({ lineGraphData })
+          ),
+           catchError((err) => {
+         /*    this.notifyService.showError(
+              'Error While Loading Last Three Year Balances',
+              'Error'
+            ); */
+            return of(DashBoardActions.last12MonthsBalancesLoadError());
+          })
+        )
+      )
+    )
+  );
+
+  constructor(
+    private actions$: Actions,
+    private store: Store<SharedState>,
+    private transactionService: TransactionService
+  ) {}
+}
+
+```
+
+##  Step 5 :  Setting Up Dashboard Selectors
+
+Create a new file in store folder named `dashboard.selectors.ts`. This file will contain multiple selectors that will emit a new value to the store only if the value was changed. 
+
+Here we have multiple selectors like 
+
+ `last12MonthsBalancesSelector` returns the last 12 months data.
+
+ `last6MonthsBalancesSelector` returns the last 6 months data.
+
+Here is the code as below : 
+
+```ts
+import { createFeatureSelector, createSelector } from "@ngrx/store";
+import { SharedState } from "./reducers/shared.reducers";
+
+export const selectSharedState = createFeatureSelector<SharedState>('shared');
+
+export const last12MonthsBalancesSelector = createSelector(
+  selectSharedState,
+  (sharedState) => sharedState.last12MonthsBalances
+);
+
+export const last6MonthsBalancesSelector = createSelector(
+  selectSharedState,
+  (sharedState) => {
+    if (sharedState.last12MonthsBalances != null) {
+      let clone = { ...sharedState.last12MonthsBalances }
+      clone.figures = sharedState.last12MonthsBalances.figures.slice(-6)
+      clone.labels = sharedState.last12MonthsBalances.labels.slice(-6)
+      return clone
+    }
+    return null;
+  },
+
+);
+```
+
+## Step 6 :  Setting Up Shared Module
+Go to `shared.module.ts` and added reducer reference in imported `StoreModule` to Plugging in the reducers for root module.
+Also we will be injecting Dashboard Effects of this module in `EffectsModule` 
+
+Add `StoreModule` and `effectsModule` in imports as below 
+
+```ts
+@NgModule({
+  declarations: [SidenavComponent, ToolbarComponent, DashboardComponent, SharedComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatSidenavModule,
+     // sharedFeatureKey is key against which all the values for this modules will be stored in local storage store. 
+    // reducers are also hooked up for this feature module
+    StoreModule.forFeature(fromShared.sharedFeatureKey, fromShared.sharedReducer, {}),
+    EffectsModule.forFeature([DashBoardEffects]),
+  ],
+  // eslint-disable-next-line max-len
+  exports: [SharedComponent], // all exported components from here will be available where shared modules is imported.
+})
+```
+
+
+
+##  Step 7 : Dispatch loadLast12MonthsBalances Action
+
+Go to `shared.component.ts` and create `Store<AppState>` object in constructor.
+Call the `loadLast12MonthsBalances` action on `ngOnInit` event as below :
+
+```ts 
+export default class SharedComponent implements OnInit, OnDestroy {
+
+  // Declaring Observable variable ($ postfix in variable name is convention to declare Observable.)
+  isUserLoggedIn$: Observable<boolean>;
+  
+  loggedInUserSub: Subscription;
+
+  constructor(private appStore: Store<AppState>, private sharedStore: Store<SharedState>) { }
+
+  ngOnInit(): void {
+    // this.store is an Observable. Just like any other Observable we can apply pipe to it
+    this.isUserLoggedIn$ = this.appStore
+      .pipe(
+        // Here we are going to apply an operator that is going to convert current value of AppState into a boolean (as per definition of isUserLoggedIn$)
+        // So we will receive AppState current value here and access the globalState property (the main property that was set in reducers) of it. 
+        // And from here we are going to check if loggedInUser property is available or not
+        // !! negating it 2 times will convert the expression (state['globalState'].loggedInUser) into true of false.
+        // if property 'loggedInUser' is null its going to return false otherwise it will return true.
+        // map(state => !!state['globalState'].loggedInUser)
+
+        // When application grows there will be many actions that will be emitted from store and each time the value above will be re calculated. To avoid that we use concept of selectors.
+        // select operator from ngRx does both. Mapping of values and elimination of duplicates. 
+        select(isLoggedIn)
+      );
+
+      this.loggedInUserSub = this.appStore
+      .select(loggedInUser)
+      .subscribe((user: AppUser) => {
+        if (user != null) {
+          this.sharedStore.dispatch(DashBoardActions.loadLast12MonthsBalances({ userId: user?.roles.includes('bank-manager') ? null : user?.id }));
+        }
+      });
+  }
+
+  
+  ngOnDestroy(): void {
+    this.loggedInUserSub.unsubscribe();
+  }
+}
+
+```
+
+We will be using async pipe for isUserLoggedIn as blow : 
+
+```html
+<div class="container-fluid" style="height: 100%;">
+    <!--async PIPE is going to subscribe to the observable and it will convert this expression by the values emitted by the Observable. -->
+    <app-toolbar *ngIf="isUserLoggedIn$ | async" [inputSideNav]="sideNav"></app-toolbar>
+    <mat-sidenav-container style="height: 100%">
+        <mat-sidenav opened #sideNav mode="side">
+            <app-sidenav *ngIf="isUserLoggedIn$ | async"></app-sidenav>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+```
+
+## Step 8 :  Subscribe last12MonthsBalancesSelector 
+
+Go to `Dashboard.component.ts` and create `Store<AppState>` object in constructor.
+Subscribe the shared Appstate and select `last12MonthBalancesSub`  to get the required information.
+
+
+```ts 
+export default class DashboardComponent implements OnInit {
+  lineGraphData: LineGraphData;
+  lineGraphDataLast6Month: LineGraphData;
+  constructor(private transactionService: TransactionService, private store: Store<AppState>) { }
+
+  ngOnInit(): void {
+
+    this.store
+      .select(last12MonthsBalancesSelector)
+      .subscribe((result: any) => {
+
+        if (result != null) {
+          this.lineGraphData = result;
+        }
+      });
+  }
+}
+```
+
+## Step 9 :  Setup Last6Months Dashboard  
+
+We will create a new component `Last6MonthDashboardComponent` in shared folder using command as below 
+
+```
+ng g component shared/last6MonthDashboard
+```
+
+In this component we will create `Store<AppState>` object in constructor and Subscribe the shared Appstate and select `last6MonthsBalancesSelector`  to get the required information.
+
+```ts
+export class Last6MonthDashboardComponent implements OnInit {
+  lineGraphDataLast6Month: LineGraphData;
+  constructor(private store: Store<AppState>) { }
+
+  ngOnInit(): void {
+    
+    this.store
+      .select(last6MonthsBalancesSelector)
+      .subscribe((result: any) => {
+debugger;
+        if (result != null) {
+          this.lineGraphDataLast6Month = result;
+        }
+      });
+  }
+}
+```
+We will create a grid to show the result on UI as below :
+
+```html
+ <div class="card-body" style="background: white;">
+  <div class="table-full-width table-responsive">
+    <table width="100%" class="table table-striped table-hover">
+      <thead>
+        <tr>
+            
+          <th width="20%">Years</th>
+          <th width="20%">Balances</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of lineGraphDataLast6Month?.labels; let i = index">
+          <td>
+            {{ item }}
+          </td>
+          <td>
+            {{ lineGraphDataLast6Month.figures[i] }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+```
+
+## Setup Routing for Last6Month dashboard
+
+We will create a link in our dashboard component and whenever the link is clicked we will route to Last6Month component. To setup the routing go to `app-routing.module.ts` and add a new routing as below :
+
+```ts
+{ path: 'last6MonthsRecord', component: Last6MonthDashboardComponent }
+```
+
+To setup the link on Dashboard component, go to dashboard component and create a link as below :
+
+```html
+<a [routerLink]="['/last6MonthsRecord']">6 Months Records</a>
+```
+
+Run the application and see its working as below
+
+![final](https://user-images.githubusercontent.com/100709775/171859407-94636b94-e2a2-4913-bb3c-d4cdecc35588.gif)
+
+
+
+
+
