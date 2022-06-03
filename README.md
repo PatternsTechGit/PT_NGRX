@@ -878,7 +878,7 @@ We will create a grid to show the result on UI as below :
 </div>
 ```
 
-## Setup Routing for Last6Month dashboard
+## Step 10 : Routing for Last6Month dashboard
 
 We will create a link in our dashboard component and whenever the link is clicked we will route to Last6Month component. To setup the routing go to `app-routing.module.ts` and add a new routing as below :
 
