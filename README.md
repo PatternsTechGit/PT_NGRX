@@ -37,12 +37,13 @@ Previously we scaffolded a new Angular application in which we have integrated
 * FontAwesome Library for icons
 * Bootstrap Library for styling buttons
 * Bootstrap NavBar component
-* We have multiple components e.g. (CreateAccountComponent,   ManageAccountsComponent, DepositFundsComponent, TransferFundsComponent) in our application for which we have already configured routing.
+* We have multiple components divided in multiple modules that are being lazily loaded. e.g. Shared Module has Dashboard , Top Bar and SideNav Components and are **eagerly loaded**. where as Bank-Manager module have CreateAccountComponent and ManageAccountsComponent. Account-Holder module has DepositFundsComponent and TransferFundsComponent that are **lazily loaded.** 
+* Each module has its routing separated out int module specific routing file. 
 * SideNav having links which are navigating to these components.
 * We developed a base structure of an api solution in Asp.net core that have just two api functions GetLast12MonthBalances & GetLast12MonthBalances/{userId} which returns data of the last 12 months total balances.
 * There is an authorization service with two functions Login & Logout, The login function is setting up a hardcoded user properties (Name,Email,Roles) and storing it in local storage where as logout function is removing that user object from local storage.
 * Links on the sideNav are shown or hidden based on the logged in user's role
-*  We also have a toolbar that shows Logged in User's Name.
+* We also have a toolbar that shows Logged in User's Name.
 
 The Dashboard page shows the received data for API as below 
 
@@ -366,7 +367,7 @@ Add `storeModule` and `effectsModule` in imports as below
 ##  Step 7 : Dispatch loginSuccess Action
 
 Go to `login.component.ts` and create `Store<AppState>` object in constructor.
-Call the `loginSuccess` action on login event as below :
+Dispatch the `loginSuccess` action on login event as below :
 
 ```ts 
 
@@ -401,9 +402,9 @@ export class LoginComponent implements OnInit {
 ## Step 8 :  Subscribe Global State & Dispatch logout Action
 
 Go to `toolbar.component.ts` and create `Store<AppState>` object in constructor.
-Subscribe the global Appstate and select `loggedInUser` to get the loggedInUser from state. 
+Subscribe the global Appstate and get the `loggedInUser` by subscribing to loggedInUser selector from state. 
 
-Call the `logout` action on logout event as below :
+Dispatch the `logout` action on logout event as below :
 
 ```ts 
 
@@ -454,7 +455,7 @@ export default class SidenavComponent implements OnInit {
   }
 }
 ```
- Then we will use async pipe in html to auto subscribe to results as below :
+ Then we will use async pipe in html to **auto subscribe** to observable's original value as below :
 
  ```html
  <div class="sidenav">
@@ -510,7 +511,7 @@ As the page will be reloaded after login success, Once the page is reloaded then
 }
 ```
  # Create Shared Store 
-The shared store will contains the last12MonthsBalances information. The `Sharded component` will be dispatching the `loadLast12MonthsBalances` action whereas the `Dashboard component` will be subscribing the `loadLast12MonthsBalances` selectors and displaying the result.
+The shared store will be created to maintain data related to dashboard components and everything that is shared. in this case it will contains the last12MonthsBalances information in it as it is required by graphs on the dashboard. The `Sharded component` will be dispatching the `loadLast12MonthsBalances` action whereas the `Dashboard component` will be subscribing to the `loadLast12MonthsBalances` selectors and displaying the result.
 
  Here are the steps to start with: 
 
