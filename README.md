@@ -780,7 +780,7 @@ export default class SharedComponent implements OnInit, OnDestroy {
 
 ```
 
-We will be using async pipe for isUserLoggedIn as blow : 
+We will be using async pipe for isUserLoggedIn in `shared.component.html` as blow : 
 
 ```html
 <div class="container-fluid" style="height: 100%;">
@@ -807,11 +807,11 @@ Subscribe the shared Appstate and select `last12MonthBalancesSub`  to get the re
 export default class DashboardComponent implements OnInit {
   lineGraphData: LineGraphData;
   lineGraphDataLast6Month: LineGraphData;
-  constructor(private transactionService: TransactionService, private store: Store<AppState>) { }
+  constructor(private transactionService: TransactionService, private sharedStore: Store<SharedState>) { }
 
   ngOnInit(): void {
 
-    this.store
+    this.sharedStore
       .select(last12MonthsBalancesSelector)
       .subscribe((result: any) => {
 
@@ -836,11 +836,11 @@ In this component we will create `Store<AppState>` object in constructor and Sub
 ```ts
 export class Last6MonthDashboardComponent implements OnInit {
   lineGraphDataLast6Month: LineGraphData;
-  constructor(private store: Store<AppState>) { }
+  constructor(private sharedStore: Store<SharedState>) { }
 
   ngOnInit(): void {
     
-    this.store
+    this.sharedStore
       .select(last6MonthsBalancesSelector)
       .subscribe((result: any) => {
 debugger;
