@@ -1,0 +1,25 @@
+
+<div class="container-fluid" style="height: 100%;">
+    <!--async PIPE is going to subscribe to the observable and it will convert this expression by the values emitted by the Observable. -->
+    <app-toolbar *ngIf="isUserLoggedIn$ | async" [inputSideNav]="sideNav"></app-toolbar>
+    <mat-sidenav-container style="height: 100%">
+        <mat-sidenav opened #sideNav mode="side">
+            <app-sidenav *ngIf="isUserLoggedIn$ | async"></app-sidenav>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div>
+
+<!-- <div class="container-fluid" style="height: 100%;">
+    <app-toolbar *ngIf="isUserLoggedIn" [inputSideNav]="sideNav"></app-toolbar>
+    <mat-sidenav-container style="height: 100%">
+        <mat-sidenav opened #sideNav mode="side">
+            <app-sidenav *ngIf="isUserLoggedIn"></app-sidenav>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <router-outlet></router-outlet>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
+</div> -->
