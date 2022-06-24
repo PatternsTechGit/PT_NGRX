@@ -1,48 +1,48 @@
-# **State management with NGRX**
+# **State management with NgRx**
 
-## **What Is NGRX?**
+## **What Is NgRx?**
 
 [NgRx](https://auth0.com/blog/state-management-in-angular-with-ngrx-1/) is a framework for building `reactive applications` in Angular. NgRx is inspired by the `Redux pattern` - unifying the events in your application and deriving state using RxJS. At a high level, NgRx `stores a single state` and uses actions to express state changes. NgRx excels in managing complex states, making it ideal for applications with a lot of user interactions and multiple data sources.
 
-## **How Does NGRX Work**
-NgRx is made up of five main components - `Store, Actions, Reducers, Selectors, and Effects`.
+## **How Does NgRx Work**
+NgRx is made up of five main components - **Store, Actions, Reducers, Selectors,** and **Effects**.
 
-NgRx uses the Redux concept of unidirectional data flow, where all application data goes through the same lifecycle. This unidirectional data flow makes the application's state more predictable and thus easier to understand. This flow only applies to the state management layer and is not to be confused with the unidirectional data flow of the presentation layer. The following diagram shows the state management lifecycle in NgRx.
+NgRx uses the Redux concept of **unidirectional data flow**, where all application data goes through the same lifecycle. This unidirectional data flow makes the application's state more predictable and thus easier to understand. This flow only applies to the state management layer and is not to be confused with the unidirectional data flow of the presentation layer. The following diagram shows the state management lifecycle in NgRx.
 
 ![01_ngrx-how-it-works](https://user-images.githubusercontent.com/100709775/169290425-4942c6c5-4dcf-455c-89f3-3b6a13dcfc97.png)
 
 
 ## **Store**
 
-You can think of this as a client-side database. The Store in NgRx acts as the application's single source of truth. It reflects the current state of the app.
+You can think of this as a **client-side database**. The Store in NgRx acts as the application's single source of truth. It reflects the current state of the application.
 
 ## **Actions**
-Actions express unique events that happen in our application. These events range from application lifecycle events, and user interactions, to network requests. Actions are how the application communicates with NgRx to tell it what to do.
+Actions **express unique events** that happen in our application. These events range from application lifecycle events, and user interactions, and network requests. Actions are how the application communicates with NgRx to tell it what to do.
 
 ## **Reducers**
-Reducers are responsible for handling transitions between states. Reducers react to the Actions dispatched and execute a pure function to update the Store. Pure functions are functions that are predictable and have no side effects. Given the same set of inputs, a pure function will always return the same set of outputs.
+Reducers are responsible for **handling transitions between states**. Reducers react to the Actions dispatched and execute a pure function to update the Store. Pure functions are functions that are predictable and have no side effects. Given the same set of inputs, a pure function will always return the same set of outputs.
 
 ## **Selectors**
-Selectors are pure functions for getting slices of the state from the Store. Selectors are how our application can listen to state changes.
+Selectors are pure functions for getting **slices of the state from the Store**. Selectors are how our application can listen to state changes.
 
 ## **Effects**
-Effects handle the side effects of each Action. These side effects range from communicating with an external API via HTTP when a certain Action is dispatched to dispatching another Action to update another part of the State.
+Effects **handle the side effects of each Action**. These side effects range from communicating with an external API via HTTP when a certain Action is dispatched to dispatching another Action to update another part of the State.
 
 
 ## **About this exercise**
 
 Previously we scaffolded a new Angular application in which we have integrated
 
-* Scaffolded the angular application
-* FontAwesome Library for icons
-* Bootstrap Library for styling buttons
-* Bootstrap NavBar component
-* We have multiple components divided into multiple modules that are lazily loaded. e.g. Shared Module has Dashboard, Top Bar and SideNav Components and is **eagerly loaded**. whereas the Bank-Manager module has CreateAccountComponent and ManageAccountsComponent. The account-Holder module has DepositFundsComponent and TransferFundsComponent that are **lazily loaded.** 
-* Each module has its routing separated into module-specific routing files. SideNav has links that are navigated to these components.
-* We developed a base structure of an API solution in Asp.net core that has just two API functions GetLast12MonthBalances & GetLast12MonthBalances/{userId} which return data of the last 12 months' total balances.
-* There is an authorization service with two functions Login & Logout, The login function is setting up hardcoded user properties (Name, Email, Roles) and storing them in local storage whereas the logout function is removing that user object from local storage.
-* Links on the side nav are shown or hidden based on the logged-in user's role
-* We also have a toolbar that shows Logged in user's name.
+* **Scaffolded** the angular application
+* **FontAwesome** Library for icons
+* **Bootstrap Library** for styling buttons
+* **Bootstrap NavBar** component
+* We have multiple components divided into **multiple modules** that are lazily loaded. e.g. **Shared Module** has Dashboard, Top Bar and SideNav Components and is **eagerly loaded**. whereas the **Bank-Manager module** has CreateAccountComponent and ManageAccountsComponent. The **account-Holder module** has DepositFundsComponent and TransferFundsComponent that are **lazily loaded.** 
+* Each module has its routing separated into **module-specific routing** files. SideNav has links that are navigated to these components.
+* We developed a base structure of an **API solution in Asp.net core** that has just two API functions GetLast12MonthBalances & GetLast12MonthBalances/{userId} which return data of the last 12 months' total balances.
+* There is an **authorization service with two functions Login & Logout**, The login function is setting up hardcoded user properties (Name, Email, Roles) and storing them in local storage whereas the logout function is removing that user object from local storage.
+* Links on the **side nav** are shown or hidden based on the logged-in user's role
+* We also have a **toolbar** that shows Logged in user's name.
 
 The Dashboard page shows the received data for API as below 
 
@@ -52,13 +52,13 @@ The Dashboard page shows the received data for API as below
 
 ## **In this exercise**
 
-  ***User-Related Store***
+  **User-Related Store**
  * We will implement a `store` for the global state. 
  * We will implement user-related `Actions` and `Reducer` functions against each action.
  * We will implement `Effects` against the required action.
  * We will implement multiple `selectors` for LoggedInUser.
   
-  ***Dashboard-Related Store***
+  **Dashboard-Related Store**
  * We will implement a separate `store` for the shared state. 
  * We will implement dashboard-related `Actions` and `Reducers` functions against each shared action.
  * We will implement `Effects` against the required shared action.
@@ -93,14 +93,15 @@ npm install @ngrx/effects --save
 ```
 
 # **Create Global Store**
-The global store will contain the logged user-related information and will be accessible throughout the application. The `LoginComponent` will be dispatching the login success action whereas the `ToolbarComponent` will be subscribing to the `loggedInUser` selectors of the global store.
+The global store will **contain the logged user-related information** and will be accessible throughout the application. The `loginComponent` will be dispatching the login success action whereas the `toolbarComponent` will be subscribing to the `loggedInUser` selectors of the global store.
 
  Here are the steps to start with: 
  
  ## **Step 1: Setting Up Auth Action**
 
-We will create a new folder `store` in-app directory which will contain the global state of the store.
+We will **create a new folder store** in-app directory which will contain the global state of the store.
 Create a new file in the store folder named `auth.actions.ts`. This file will contains the user-related actions in one file. 
+
 >`loginSuccess` action will be used for user login which will be dispatched from the Login component.
 
 >`logout` action will be used for user logout which will be dispatched from the TopMenuComponent.
@@ -110,7 +111,7 @@ Create a new file in the store folder named `auth.actions.ts`. This file will co
 Here is the code below :
 
 ```ts
-import { createAction, props } from "@ngrx/store";
+import { createAction, props } from "@NgRx/store";
 import AppUser from "../shared/models/app-user";
 
 // All related action in one file.
@@ -135,7 +136,7 @@ export const loginSuccess = createAction(
 ```
 ##  **Step 2: Setting Up Action Types**
 
-Now create another file in a store-folder and name it `auth.action.types.ts`, here we will be grouping the related actions so we can access them easily. We will have these actions grouped under `AuthActions` throughout the application and available through intellisense. So we import everything from the auth.actions file
+Now **create another file in a store-folder** and name it `auth.action.types.ts`, here we will be grouping the related actions so we can access them easily. We will have these actions grouped under `AuthActions` throughout the application and available through intellisense. So we import everything from the auth.actions file
 
 ```ts
 import * as AuthActions from './auth.actions';
@@ -145,7 +146,7 @@ export { AuthActions };
 
 ##  **Step 3: Setting Up Global Reducer**
 
-We will create a new folder reducer in the store directory and then create a new file named `appstate.reducers.ts` which will contain the reducer functions for each global action e.g. loginSuccess, logout and applied.
+We will **create a new folder reducer in the store directory** and then create a new file named `appstate.reducers.ts` which will contain the reducer functions for each global action e.g. loginSuccess, logout and applied.
 
 Here the reducer functions will be setting up the new value of the logged-in user on login success and appLoad event whereas it will set the logged-in user as undefined on the logout event. 
 
@@ -204,7 +205,7 @@ export const reducers: ActionReducerMap<{ globalState: AppState }> = {
 
 ## **Step 4:  Setting Up Auth Effects** 
 
-Create a new file in the store folder named `auth.effects.ts`. this file will contain the side effects which is used for interacting with external resources directly through services. In our case, we will be storing the logged-in user value in local storage on login success and removing the logged-in user value from local storage on the logout event.
+Create a new file in the store folder named `auth.effects.ts`. This file will **contain the side effects which is used for interacting with external resources directly through services**. In our case, we will be storing the logged-in user value in local storage on login success and removing the logged-in user value from local storage on the logout event.
 
 Here is the code below : 
 
@@ -223,7 +224,7 @@ import { AuthActions } from "./auth.action.types";
 export class AuthEffects {
 
     // createEffect will auto subscribe this.actions$ so we don't have to manually subscribe to it. Using createEffect also adds some error handling. 
-    // actions$ is an Observable form ngRx and we can subscribe to it to get notified  when an action is performed. 
+    // actions$ is an Observable form NgRx and we can subscribe to it to get notified  when an action is performed. 
     login$ = createEffect(() => this.actions$
     // Value emitted by this observable is Actions.
         .pipe(ofType(AuthActions.loginSuccess),
@@ -248,15 +249,14 @@ export class AuthEffects {
 
     constructor(private actions$: Actions,
         private authService: MsalService) {
-
-
     }
 }
 ```
+**MsalService enables Angular 9+ applications to authenticate enterprise users by using Azure Active Directory** (Azure AD), and also users with Microsoft accounts and social identities like Facebook, Google, and LinkedIn. The library also enables applications to get access to Microsoft cloud services and Microsoft Graph
 
 ##  Step 5:  Setting Up Selectors
 
-Create a new file in the store folder named `auth.selectors.ts`. This file will contain multiple selectors that will emit a new value to the store only if the value was changed. 
+Create a new file in the store folder named `auth.selectors.ts`. This file will **contain multiple selectors** that will emit a new value to the store only if the value was changed. 
 
 Here we have multiple selectors like 
 
@@ -276,7 +276,7 @@ Here we have multiple selectors like
 Here is the code below:
 
 ```ts
-import { createFeatureSelector, createSelector } from "@ngrx/store";
+import { createFeatureSelector, createSelector } from "@NgRx/store";
 import { AppState } from "./reducers/appstate.reducers";
 
 // Using selectors we want to only emit a new value to the store only if the value was changed. 
@@ -355,8 +355,6 @@ Add `storeModule` and `effectsModule` in imports as below
   EffectsModule.forRoot([AuthEffects])
 ```
 
-
-
 ##  **Step 7: Dispatch login success Action**
 
 Go to `login.component.ts` and create the `Store<AppState>` object in the constructor.
@@ -375,7 +373,7 @@ export class LoginComponent implements OnInit {
         console.log("Is Login Success: " + user);
 
         if (user) {
-              // Only way to modify the store is calling dispatch function. and This function takes in a value of type ngRx Action
+              // Only way to modify the store is calling dispatch function. and This function takes in a value of type NgRx Action
             // Its a store who is going to decide, what to do with this action and how to modify its internal state. 
             // A component, in this case login component, only know content of the action. It does not know what store is going to do with it. 
             // Just dispatching does not chang the contents of the store. We have to tell the system what to do as a result of an action. And thats done in reducers.
@@ -601,7 +599,7 @@ export const sharedReducer = createReducer(
 
 ## **Step 5:  Setting Up Dashboard Effects**  
 
-Create a new file in the store folder named `dashboard.effects.ts`. this file will contain the side effects which is used for interacting with external resources directly through services. In our case, we will call the `getLast12MonthBalances` method of our `TransactionService` to get the data from API.
+Create a new file in the store folder named `dashboard.effects.ts`. this file will **contain the side effects** which is used for interacting with external resources directly through services. In our case, we will call the `getLast12MonthBalances` method of our `TransactionService` to get the data from API.
 
 Here is the code below : 
 
@@ -653,7 +651,7 @@ export class DashBoardEffects {
 
 ##  **Step 6:  Setting Up Dashboard Selectors**
 
-Create a new file in the store folder named `dashboard.selectors.ts`. This file will contain multiple selectors that will emit a new value to the store only if the value was changed. 
+Create a new file in the store folder named `dashboard.selectors.ts`. This file will **contain multiple selectors** that will emit a new value to the store only if the value was changed. 
 
 Here we have multiple selectors like 
 
@@ -738,7 +736,7 @@ export default class SharedComponent implements OnInit, OnDestroy {
         // map(state => !!state['globalState'].loggedInUser)
 
         // When application grows there will be many actions that will be emitted from store and each time the value above will be re calculated. To avoid that we use concept of selectors.
-        // select operator from ngRx does both. Mapping of values and elimination of duplicates. 
+        // select operator from NgRx does both. Mapping of values and elimination of duplicates. 
         select(isLoggedIn)
       );
 
