@@ -1,19 +1,17 @@
 # **State management with NgRx**
 
 ## **What Is NgRx?**
-
-[NgRx](https://auth0.com/blog/state-management-in-angular-with-ngrx-1/) is a framework for building `reactive applications` in Angular. NgRx is inspired by the `Redux pattern` - unifying the events in your application and deriving state using RxJS. At a high level, NgRx `stores a single state` and uses actions to express state changes. NgRx excels in managing complex states, making it ideal for applications with a lot of user interactions and multiple data sources.
+[NgRx](https://auth0.com/blog/state-management-in-angular-with-ngrx-1/) is a **framework for building `reactive applications` in Angular. NgRx is inspired by the `Redux pattern`** - unifying the events in your application and deriving state using RxJS. At a high level, NgRx `stores a single state` and uses actions to express state changes. NgRx excels in managing complex states, making it ideal for applications with a lot of user interactions and multiple data sources.
 
 ## **How Does NgRx Work**
 NgRx is made up of five main components - **Store, Actions, Reducers, Selectors,** and **Effects**.
 
-NgRx uses the Redux concept of **unidirectional data flow**, where all application data goes through the same lifecycle. This unidirectional data flow makes the application's state more predictable and thus easier to understand. This flow only applies to the state management layer and is not to be confused with the unidirectional data flow of the presentation layer. The following diagram shows the state management lifecycle in NgRx.
+NgRx uses the Redux concept of **unidirectional data flow**, where all application data goes through the same lifecycle. This **unidirectional data flow makes the application's state more predictable and thus easier to understand**. This flow only applies to the state management layer and is not to be confused with the unidirectional data flow of the presentation layer. The following diagram shows the state management lifecycle in NgRx.
 
 ![01_ngrx-how-it-works](https://user-images.githubusercontent.com/100709775/169290425-4942c6c5-4dcf-455c-89f3-3b6a13dcfc97.png)
 
 
 ## **Store**
-
 You can think of this as a **client-side database**. The Store in NgRx acts as the application's single source of truth. It reflects the current state of the application.
 
 ## **Actions**
@@ -30,7 +28,6 @@ Effects **handle the side effects of each Action**. These side effects range fro
 
 
 ## **About this exercise**
-
 Previously we scaffolded a new Angular application in which we have integrated
 
 * **Scaffolded** the angular application
@@ -91,14 +88,12 @@ ng add @ngrx/schematics@latest
 ```
 npm install @ngrx/effects --save
 ```
-
 # **Create Global Store**
 The global store will **contain the logged user-related information** and will be accessible throughout the application. The `loginComponent` will be dispatching the login success action whereas the `toolbarComponent` will be subscribing to the `loggedInUser` selectors of the global store.
 
  Here are the steps to start with: 
  
  ## **Step 1: Setting Up Auth Action**
-
 We will **create a new folder store** in-app directory which will contain the global state of the store.
 Create a new file in the store folder named `auth.actions.ts`. This file will contains the user-related actions in one file. 
 
@@ -135,7 +130,6 @@ export const loginSuccess = createAction(
   
 ```
 ##  **Step 2: Setting Up Action Types**
-
 Now **create another file in a store-folder** and name it `auth.action.types.ts`, here we will be grouping the related actions so we can access them easily. We will have these actions grouped under `AuthActions` throughout the application and available through intellisense. So we import everything from the auth.actions file
 
 ```ts
@@ -145,7 +139,6 @@ export { AuthActions };
 ```
 
 ##  **Step 3: Setting Up Global Reducer**
-
 We will **create a new folder reducer in the store directory** and then create a new file named `appstate.reducers.ts` which will contain the reducer functions for each global action e.g. loginSuccess, logout and applied.
 
 Here the reducer functions will be setting up the new value of the logged-in user on login success and appLoad event whereas it will set the logged-in user as undefined on the logout event. 
@@ -204,7 +197,6 @@ export const reducers: ActionReducerMap<{ globalState: AppState }> = {
 ```
 
 ## **Step 4:  Setting Up Auth Effects** 
-
 Create a new file in the store folder named `auth.effects.ts`. This file will **contain the side effects which is used for interacting with external resources directly through services**. In our case, we will be storing the logged-in user value in local storage on login success and removing the logged-in user value from local storage on the logout event.
 
 Here is the code below : 
@@ -255,7 +247,6 @@ export class AuthEffects {
 **MsalService enables Angular 9+ applications to authenticate enterprise users by using Azure Active Directory** (Azure AD), and also users with Microsoft accounts and social identities like Facebook, Google, and LinkedIn. The library also enables applications to get access to Microsoft cloud services and Microsoft Graph
 
 ##  Step 5:  Setting Up Selectors
-
 Create a new file in the store folder named `auth.selectors.ts`. This file will **contain multiple selectors** that will emit a new value to the store only if the value was changed. 
 
 Here we have multiple selectors like 
@@ -330,7 +321,6 @@ export const loggedInUserName = createSelector(
 ```
 
 ### **Step 6:  Setting Up App Module**
-
 Go to `app.module.ts` and added reducer reference in imported `StoreModule` to Plugging in the reducers for the root module. Also, we will be injecting the Effects of this module into `EffectsModule`` 
 
 Add `storeModule` and `effectsModule` in imports as below 
@@ -356,7 +346,6 @@ Add `storeModule` and `effectsModule` in imports as below
 ```
 
 ##  **Step 7: Dispatch login success Action**
-
 Go to `login.component.ts` and create the `Store<AppState>` object in the constructor.
 Dispatch the `loginSuccess` action on the login event as below :
 
@@ -391,7 +380,6 @@ export class LoginComponent implements OnInit {
 ```
 
 ## **Step 8:  Subscribe to Global State & Dispatch logout Action**
-
 Go to `toolbar.component.ts` and inject the `Store<AppState>` in the constructor. Subscribe to the global App state and get the `logged-in user` by subscribing to the logged-in user selector from the state. 
 
 Dispatch the `logout` action on the logout event as below :
@@ -420,7 +408,6 @@ export default class ToolbarComponent implements OnInit {
 ```
 
 ##  **Step 9 : Setting Up SideNav Component**
-
 Go to `sidenav.component.ts` and create `Store<AppState>` object in constructor. we will create `isLoggedInUserManager` and `isLoggedInUserAccountHolder` observables as below :
 
 ```ts
@@ -506,7 +493,6 @@ The shared store will be created to maintain data related to dashboard component
 
 
 ## **Step 1: Install Shared Module store**
-
 We will create a store under the shared directory as below :
 
  ```ts
@@ -514,7 +500,6 @@ We will create a store under the shared directory as below :
  ```
 
 ## **Step 2: Setting Up Dashboard Action**
-
 We will create a new folder `store` in the `shared` directory which will contain the shared state of the store.
 
 Create a new file in the store folder named `dashboard.actions.ts`. This file will contains the dashboard-related actions in one file. 
@@ -543,7 +528,6 @@ import { LineGraphData } from "../models/line-graph-data";
   );
 ```
 ##  **Step 3: Setting Up Dashboard Action Types**
-
 Create a new file in the store folder named `action-types.ts`. In this file, we will be Grouping the dashboard actions so we can access them easily.  
 
 Here is the code below : 
@@ -555,7 +539,6 @@ export { DashBoardActions }
 ```
 
 ##  **Step 4: Setting Up Shared Reducer**
-
 We will create a new folder reducer in the store directory and then create a new file named `shared.reducers.ts` which will contain the reducer functions for each shared action e.g. `last12MonthsBalancesLoaded`.
 
 Here is the code below : 
@@ -598,7 +581,6 @@ export const sharedReducer = createReducer(
 
 
 ## **Step 5:  Setting Up Dashboard Effects**  
-
 Create a new file in the store folder named `dashboard.effects.ts`. this file will **contain the side effects** which is used for interacting with external resources directly through services. In our case, we will call the `getLast12MonthBalances` method of our `TransactionService` to get the data from API.
 
 Here is the code below : 
@@ -650,7 +632,6 @@ export class DashBoardEffects {
 ```
 
 ##  **Step 6:  Setting Up Dashboard Selectors**
-
 Create a new file in the store folder named `dashboard.selectors.ts`. This file will **contain multiple selectors** that will emit a new value to the store only if the value was changed. 
 
 Here we have multiple selectors like 
@@ -710,7 +691,6 @@ Add `StoreModule` and `effectsModule` in imports as below
 ```
 
 ##  **Step 8 : Dispatch loadLast12MonthsBalances Action**
-
 Go to `shared.component.ts` and create the `Store<AppState>` object in the constructor.
 Call the `loadLast12MonthsBalances` action on the `ngOnInit` event as below :
 
@@ -775,7 +755,6 @@ We will be using the async pipe for isUserLoggedIn in `shared.component.html` as
 ```
 
 ## **Step 9 :  Subscribe last12MonthsBalancesSelector** 
-
 Go to `Dashboard.component.ts` and create the `Store<AppState>` object in the constructor. Subscribe to the shared App state and select `last12MonthBalancesSub`  to get the required information.
 
 ```ts
@@ -800,7 +779,6 @@ export default class DashboardComponent implements OnInit {
 ```
 
 ## **Step 10:  Setup Last6Months Dashboard ** 
-
 We will create a new component `Last6MonthDashboardComponent` in the shared folder using the command below 
 
 ```
@@ -855,7 +833,6 @@ We will create a grid to show the result in HTML file of this component as below
 ```
 
 ## **Step 11: Routing for Last6Month dashboard**
-
 We will create a link in our dashboard component and whenever the link is clicked we will route to the Last6Month component. To set up the route go to the `app-routing.module.ts` and add a new route as below :
 
 ```ts
