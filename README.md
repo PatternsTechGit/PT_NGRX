@@ -1,49 +1,45 @@
-# State management with NGRX 
+# **State management with NgRx**
 
-## What Is Ngrx?
+## **What Is NgRx?**
+[NgRx](https://auth0.com/blog/state-management-in-angular-with-ngrx-1/) is a **framework for building `reactive applications` in Angular. NgRx is inspired by the `Redux pattern`** - unifying the events in your application and deriving state using RxJS. At a high level, NgRx `stores a single state` and uses actions to express state changes. NgRx excels in managing complex states, making it ideal for applications with a lot of user interactions and multiple data sources.
 
-[NgRx](https://auth0.com/blog/state-management-in-angular-with-ngrx-1/) is a framework for building reactive applications in Angular. NgRx is inspired by the Redux pattern - unifying the events in your application and deriving state using RxJS. At a high level, NgRx stores a single state and uses actions to express state changes. NgRx excels in managing complex states, making it ideal for applications with a lot of user interactions and multiple data sources.
+## **How Does NgRx Work**
+NgRx is made up of five main components - **Store, Actions, Reducers, Selectors,** and **Effects**.
 
-## How Does Ngrx Work
-NgRx is made up of 5 main components - Store, Actions, Reducers, Selectors, and Effects.
-
-NgRx uses the Redux concept of unidirectional data flow, where all application data goes through the same lifecycle. This unidirectional data flow makes the application's state more predictable and thus easier to understand. This flow only applies to the state management layer and is not to be confused with the unidirectional data flow of the presentation layer. The following diagram shows the state management lifecycle in NgRx.
+NgRx uses the Redux concept of **unidirectional data flow**, where all application data goes through the same lifecycle. This **unidirectional data flow makes the application's state more predictable and thus easier to understand**. This flow only applies to the state management layer and is not to be confused with the unidirectional data flow of the presentation layer. The following diagram shows the state management lifecycle in NgRx.
 
 ![01_ngrx-how-it-works](https://user-images.githubusercontent.com/100709775/169290425-4942c6c5-4dcf-455c-89f3-3b6a13dcfc97.png)
 
 
-## Store
+## **Store**
+You can think of this as a **client-side database**. The Store in NgRx acts as the application's single source of truth. It reflects the current state of the application.
 
-You can think of this as a client-side database. The Store in NgRx acts as the application's single source of truth. It reflects the current state of the app.
+## **Actions**
+Actions **express unique events** that happen in our application. These events range from application lifecycle events, and user interactions, and network requests. Actions are how the application communicates with NgRx to tell it what to do.
 
-## Actions
-Actions express unique events that happen in our application. These events range from application lifecycle events, user interactions, to network requests. Actions are how the application communicates with NgRx to tell it what to do.
+## **Reducers**
+Reducers are responsible for **handling transitions between states**. Reducers react to the Actions dispatched and execute a pure function to update the Store. Pure functions are functions that are predictable and have no side effects. Given the same set of inputs, a pure function will always return the same set of outputs.
 
-## Reducers
-Reducers are responsible for handling transitions between states. Reducers react to the Actions dispatched and executes a pure function to update the Store. Pure functions are functions that are predictable and have no side effects. Given the same set of inputs, a pure function will always return the same set of outputs.
+## **Selectors**
+Selectors are pure functions for getting **slices of the state from the Store**. Selectors are how our application can listen to state changes.
 
-## Selectors
-Selectors are pure functions for getting slices of the state from the Store. Selectors are how our application can listen to state changes.
-
-## Effects
-Effects handle the side effects of each Action. These side effects range from communicating with an external API via HTTP when a certain Action is dispatched to dispatching another Action to update another part of the State.
+## **Effects**
+Effects **handle the side effects of each Action**. These side effects range from communicating with an external API via HTTP when a certain Action is dispatched to dispatching another Action to update another part of the State.
 
 
-## About this exercise
-
+## **About this exercise**
 Previously we scaffolded a new Angular application in which we have integrated
 
-* Scaffolded the angular application
-* FontAwesome Library for icons
-* Bootstrap Library for styling buttons
-* Bootstrap NavBar component
-* We have multiple components divided in multiple modules that are being lazily loaded. e.g. Shared Module has Dashboard , Top Bar and SideNav Components and are **eagerly loaded**. where as Bank-Manager module have CreateAccountComponent and ManageAccountsComponent. Account-Holder module has DepositFundsComponent and TransferFundsComponent that are **lazily loaded.** 
-* Each module has its routing separated out int module specific routing file. 
-* SideNav having links which are navigating to these components.
-* We developed a base structure of an api solution in Asp.net core that have just two api functions GetLast12MonthBalances & GetLast12MonthBalances/{userId} which returns data of the last 12 months total balances.
-* There is an authorization service with two functions Login & Logout, The login function is setting up a hardcoded user properties (Name,Email,Roles) and storing it in local storage where as logout function is removing that user object from local storage.
-* Links on the sideNav are shown or hidden based on the logged in user's role
-* We also have a toolbar that shows Logged in User's Name.
+* **Scaffolded** the angular application
+* **FontAwesome** Library for icons
+* **Bootstrap Library** for styling buttons
+* **Bootstrap NavBar** component
+* We have multiple components divided into **multiple modules** that are lazily loaded. e.g. **Shared Module** has Dashboard, Top Bar and SideNav Components and is **eagerly loaded**. whereas the **Bank-Manager module** has CreateAccountComponent and ManageAccountsComponent. The **account-Holder module** has DepositFundsComponent and TransferFundsComponent that are **lazily loaded.** 
+* Each module has its routing separated into **module-specific routing** files. SideNav has links that are navigated to these components.
+* We developed a base structure of an **API solution in Asp.net core** that has just two API functions GetLast12MonthBalances & GetLast12MonthBalances/{userId} which return data of the last 12 months' total balances.
+* There is an **authorization service with two functions Login & Logout**, The login function is setting up hardcoded user properties (Name, Email, Roles) and storing them in local storage whereas the logout function is removing that user object from local storage.
+* Links on the **side nav** are shown or hidden based on the logged-in user's role
+* We also have a **toolbar** that shows Logged in user's name.
 
 The Dashboard page shows the received data for API as below 
 
@@ -51,23 +47,24 @@ The Dashboard page shows the received data for API as below
 
 
 
-## In this exercise
+## **In this exercise**
 
- * We will implement `store` for global state. 
- * We will implement user related `Actions` and `Reducers` functions against each actions.
+  **User-Related Store**
+ * We will implement a `store` for the global state. 
+ * We will implement user-related `Actions` and `Reducer` functions against each action.
  * We will implement `Effects` against the required action.
  * We will implement multiple `selectors` for LoggedInUser.
- * We will implement separate `store` for shared state. 
- * We will implement dashboard related `Actions` and `Reducers` functions against each shared actions.
+  
+  **Dashboard-Related Store**
+ * We will implement a separate `store` for the shared state. 
+ * We will implement dashboard-related `Actions` and `Reducers` functions against each shared action.
  * We will implement `Effects` against the required shared action.
  * We will implement multiple `selectors` for required data.
 
-
  Here are the steps to begin with 
 
-
-## Install NgRx Library
-To start the NgRx we will first install the NgRx libraries.
+## **Install NgRx Library**
+To start the NgRx we will first install the NgRx library.
 
 `@ngrx/store` is used to create a store in our application.
  Install the store using command as below :
@@ -75,7 +72,7 @@ To start the NgRx we will first install the NgRx libraries.
 ng add @ngrx/store
 ```
 
-`@ngrx/store-devtools` provides developer tools and instrumentation for Store. Install the devtools using command as below :
+`@ngrx/store-devtools` provides developer tools and instrumentation for Store. Install the dev tools using the command below :
 
 ```
 ng add @ngrx/store-devtools
@@ -86,29 +83,30 @@ ng add @ngrx/store-devtools
 ng add @ngrx/schematics@latest
 ```
 
-`@ngrx/effects` is used for interacting with external resources directly through services. Install the effects using command as below :
+`@ngrx/effects` are used for interacting with external resources directly through services. Install the effects using the command below :
 
 ```
 npm install @ngrx/effects --save
 ```
-
-# Create Global Store 
-The global store will contains the loggedIn user related information and will be accessible throughout the application. The `Login component` will be dispatching the `loginSuccess` action whereas the `Toolbar component` will be subscribing the `loggedInUser` selectors of Global store.
+# **Create Global Store**
+The global store will **contain the logged user-related information** and will be accessible throughout the application. The `loginComponent` will be dispatching the login success action whereas the `toolbarComponent` will be subscribing to the `loggedInUser` selectors of the global store.
 
  Here are the steps to start with: 
+ 
+ ## **Step 1: Setting Up Auth Action**
+We will **create a new folder store** in-app directory which will contain the global state of the store.
+Create a new file in the store folder named `auth.actions.ts`. This file will contains the user-related actions in one file. 
 
-## Step 1 : Setting Up Auth Action
+>`loginSuccess` action will be used for user login which will be dispatched from the Login component.
 
-We will create a new folder `store` in app directory which will contains the global state of store.
+>`logout` action will be used for user logout which will be dispatched from the TopMenuComponent.
 
-Create a new file in store folder named `auth.actions.ts`. This file will contains the user related actions in one file. 
+>`appLoad` will be used for setting the user state.
 
-Here `loginSuccess` action will be used for user login which will be dispatched from Login component whereas `logout` action will be used for user logout which will be dispatched from Top Menu component. `appLoad` will be used for setting the user state.
-
-Here is the code as below :
+Here is the code below :
 
 ```ts
-import { createAction, props } from "@ngrx/store";
+import { createAction, props } from "@NgRx/store";
 import AppUser from "../shared/models/app-user";
 
 // All related action in one file.
@@ -131,14 +129,21 @@ export const loginSuccess = createAction(
   );
   
 ```
+##  **Step 2: Setting Up Action Types**
+Now **create another file in a store-folder** and name it `auth.action.types.ts`, here we will be grouping the related actions so we can access them easily. We will have these actions grouped under `AuthActions` throughout the application and available through intellisense. So we import everything from the auth.actions file
 
-##  Step 2 : Setting Up Global Reducer
+```ts
+import * as AuthActions from './auth.actions';
 
-We will create a new folder `reducers` in store directory and then create a new file named `appstate.reducers.ts` which will contain the reducer functions for each global actions e.g. `loginSuccess`, `logout` and `appLoad`.
+export { AuthActions };
+```
 
-Here the reducer functions will be setting up the new value of loggedInUser on  loginSuccess and appLoad event whereas it will set loggedInUser as undefined on logout event. 
+##  **Step 3: Setting Up Global Reducer**
+We will **create a new folder reducer in the store directory** and then create a new file named `appstate.reducers.ts` which will contain the reducer functions for each global action e.g. loginSuccess, logout and applied.
 
-Here is the code as below : 
+Here the reducer functions will be setting up the new value of the logged-in user on login success and appLoad event whereas it will set the logged-in user as undefined on the logout event. 
+
+Here is the code below : 
 
 ```ts
 import { Action, ActionReducerMap, createAction, createReducer, on } from '@ngrx/store'
@@ -190,29 +195,11 @@ export const reducers: ActionReducerMap<{ globalState: AppState }> = {
   globalState: authReducer,
 };
 ```
-##  Step 3 : Setting Up Action Types
 
-Create a new file in store folder named `auth.action.types.ts`. In this file we will be Grouping the auth actions so we can access them easily.  
+## **Step 4:  Setting Up Auth Effects** 
+Create a new file in the store folder named `auth.effects.ts`. This file will **contain the side effects which is used for interacting with external resources directly through services**. In our case, we will be storing the logged-in user value in local storage on login success and removing the logged-in user value from local storage on the logout event.
 
-Here is the code as below : 
-
-```ts
-// Grouping the related actions so we can access them easily. 
-// So we import everything from the auth.actions file
-import * as AuthActions from './auth.actions';
-
-// Now we will have these actions grouped under AuthActions throughout the application and available through intellisense  
-export { AuthActions };
-```
-
-## Step 4 :  Setting Up Auth Effects 
-
-Create a new file in store folder named `auth.effects.ts`. this file will contain the side effects which is used for  interacting with external resources directly through services.
-
-In our case we will be storing the loggedInUser value in local storage on `loginSuccess` and removing the loggedInUser value from local storage
-on `logout` event.
-
-Here is the code as below : 
+Here is the code below : 
 
 ```ts
 import { Injectable } from "@angular/core";
@@ -229,7 +216,7 @@ import { AuthActions } from "./auth.action.types";
 export class AuthEffects {
 
     // createEffect will auto subscribe this.actions$ so we don't have to manually subscribe to it. Using createEffect also adds some error handling. 
-    // actions$ is an Observable form ngRx and we can subscribe to it to get notified  when an action is performed. 
+    // actions$ is an Observable form NgRx and we can subscribe to it to get notified  when an action is performed. 
     login$ = createEffect(() => this.actions$
     // Value emitted by this observable is Actions.
         .pipe(ofType(AuthActions.loginSuccess),
@@ -254,15 +241,13 @@ export class AuthEffects {
 
     constructor(private actions$: Actions,
         private authService: MsalService) {
-
-
     }
 }
 ```
+**MsalService enables Angular 9+ applications to authenticate enterprise users by using Azure Active Directory** (Azure AD), and also users with Microsoft accounts and social identities like Facebook, Google, and LinkedIn. The library also enables applications to get access to Microsoft cloud services and Microsoft Graph
 
-##  Step 5 :  Setting Up Selectors
-
-Create a new file in store folder named `auth.selectors.ts`. This file will contain multiple selectors that will emit a new value to the store only if the value was changed. 
+##  Step 5:  Setting Up Selectors
+Create a new file in the store folder named `auth.selectors.ts`. This file will **contain multiple selectors** that will emit a new value to the store only if the value was changed. 
 
 Here we have multiple selectors like 
 
@@ -279,10 +264,10 @@ Here we have multiple selectors like
  `loggedInUserName` returns the full name of loggedInUser.
 
 
-Here is the code as below : 
+Here is the code below:
 
 ```ts
-import { createFeatureSelector, createSelector } from "@ngrx/store";
+import { createFeatureSelector, createSelector } from "@NgRx/store";
 import { AppState } from "./reducers/appstate.reducers";
 
 // Using selectors we want to only emit a new value to the store only if the value was changed. 
@@ -333,12 +318,10 @@ export const loggedInUserName = createSelector(
     selectGlobalState,
     (globalState) => globalState.loggedInUser?.firstName + ' ' + globalState.loggedInUser?.lastName
 );
-
 ```
 
-## Step 6 :  Setting Up App Module
-Go to `app.module.ts` and added reducer reference in imported `StoreModule` to Plugging in the reducers for root module.
-Also we will be injecting Effects of this module in `EffectsModule` 
+### **Step 6:  Setting Up App Module**
+Go to `app.module.ts` and added reducer reference in imported `StoreModule` to Plugging in the reducers for the root module. Also, we will be injecting the Effects of this module into `EffectsModule`` 
 
 Add `storeModule` and `effectsModule` in imports as below 
 
@@ -362,12 +345,9 @@ Add `storeModule` and `effectsModule` in imports as below
   EffectsModule.forRoot([AuthEffects])
 ```
 
-
-
-##  Step 7 : Dispatch loginSuccess Action
-
-Go to `login.component.ts` and create `Store<AppState>` object in constructor.
-Dispatch the `loginSuccess` action on login event as below :
+##  **Step 7: Dispatch login success Action**
+Go to `login.component.ts` and create the `Store<AppState>` object in the constructor.
+Dispatch the `loginSuccess` action on the login event as below :
 
 ```ts 
 
@@ -382,7 +362,7 @@ export class LoginComponent implements OnInit {
         console.log("Is Login Success: " + user);
 
         if (user) {
-              // Only way to modify the store is calling dispatch function. and This function takes in a value of type ngRx Action
+              // Only way to modify the store is calling dispatch function. and This function takes in a value of type NgRx Action
             // Its a store who is going to decide, what to do with this action and how to modify its internal state. 
             // A component, in this case login component, only know content of the action. It does not know what store is going to do with it. 
             // Just dispatching does not chang the contents of the store. We have to tell the system what to do as a result of an action. And thats done in reducers.
@@ -399,12 +379,10 @@ export class LoginComponent implements OnInit {
 
 ```
 
-## Step 8 :  Subscribe Global State & Dispatch logout Action
+## **Step 8:  Subscribe to Global State & Dispatch logout Action**
+Go to `toolbar.component.ts` and inject the `Store<AppState>` in the constructor. Subscribe to the global App state and get the `logged-in user` by subscribing to the logged-in user selector from the state. 
 
-Go to `toolbar.component.ts` and create `Store<AppState>` object in constructor.
-Subscribe the global Appstate and get the `loggedInUser` by subscribing to loggedInUser selector from state. 
-
-Dispatch the `logout` action on logout event as below :
+Dispatch the `logout` action on the logout event as below :
 
 ```ts 
 
@@ -429,8 +407,8 @@ export default class ToolbarComponent implements OnInit {
 }
 ```
 
-##  Step 9 : Setting Up SideNav Component
-Go to `sidenav.component.ts` and create `Store<AppState>` object in constructor. we will create `isLoggedInUserManager` and `isLoggedInUserAccountHolder`observables as below :
+##  **Step 9 : Setting Up SideNav Component**
+Go to `sidenav.component.ts` and create `Store<AppState>` object in constructor. we will create `isLoggedInUserManager` and `isLoggedInUserAccountHolder` observables as below :
 
 ```ts
 export default class SidenavComponent implements OnInit {
@@ -455,7 +433,7 @@ export default class SidenavComponent implements OnInit {
   }
 }
 ```
- Then we will use async pipe in html to **auto subscribe** to observable's original value as below :
+ Then we will use async pipe in HTML to **auto-subscribe** to the observable's original value as below :
 
  ```html
  <div class="sidenav">
@@ -492,9 +470,9 @@ export default class SidenavComponent implements OnInit {
 
 
 
-##  Step 10 : Setting Up App Component
-Go to `app.component.ts` and create `Store<AppState>` object in constructor.
-As the page will be reloaded after login success, Once the page is reloaded then saved NgRx state is disposed automatically. So we will get the loggedInUser value from local storage on `ngOnInit` and then set the value using `appLoad` dispatch action as below :
+##  **Step 10: Setting Up App Component**
+Go to `app.component.ts` and create the `Store<AppState>` object in the constructor.
+As the page will be reloaded after login success, Once the page is reloaded then the saved NgRx state is disposed of automatically. So we will get the logged-in user value from local storage on `ngOnInit` and then set the value using the `appLoad` dispatch action as below :
 
 ```ts
   export default class AppComponent implements OnInit {
@@ -510,33 +488,25 @@ As the page will be reloaded after login success, Once the page is reloaded then
   title = 'BBBankUI';
 }
 ```
- # Create Shared Store 
-The shared store will be created to maintain data related to dashboard components and everything that is shared. in this case it will contains the last12MonthsBalances information in it as it is required by graphs on the dashboard. The `Sharded component` will be dispatching the `loadLast12MonthsBalances` action whereas the `Dashboard component` will be subscribing to the `loadLast12MonthsBalances` selectors and displaying the result.
+ # **Create Shared Store** 
+The shared store will be created to maintain data related to dashboard components and everything that is shared. In this case, it will contain the `last12MonthsBalances` information in it as it is required by graphs on the dashboard. The `Shared component` will be dispatching the `loadLast12MonthsBalances` action whereas the `Dashboard component` will be subscribing to the `loadLast12MonthsBalances` selectors and displaying the result.
 
- Here are the steps to start with: 
 
-## Install Shared Module store
-
-We will create a store under shared directory as below :
-
- ```ts
- ng g store shared/Shared --module shared.module.ts
- ```
-We will install the `schematics` in shared module as below :
+## **Step 1: Install Shared Module store**
+We will create a store under the shared directory as below :
 
  ```ts
   ng generate @ngrx/schematics:store shared/Shared --module shared.module.ts
  ```
 
-## Step 1 : Setting Up Dashboard Action
+## **Step 2: Setting Up Dashboard Action**
+We will create a new folder `store` in the `shared` directory which will contain the shared state of the store.
 
-We will create a new folder `store` in app directory which will contains the shared state of store.
+Create a new file in the store folder named `dashboard.actions.ts`. This file will contains the dashboard-related actions in one file. 
 
-Create a new file in store folder named `dashboard.actions.ts`. This file will contains the dashboard related actions in one file. 
+Here `loadLast12MonthsBalances` action will be used for getting last 12 months' data which will be dispatched from the shared component.
 
-Here `loadLast12MonthsBalances` action will be used for getting last 12 months data which will be dispatched from shared component.
-
-Here is the code as below :
+Here is the code below :
 
 ```ts
 import { createAction, props } from "@ngrx/store";
@@ -557,12 +527,21 @@ import { LineGraphData } from "../models/line-graph-data";
     '[DashBoard Effect] Last 12 Month Balances Load Error'
   );
 ```
+##  **Step 3: Setting Up Dashboard Action Types**
+Create a new file in the store folder named `action-types.ts`. In this file, we will be Grouping the dashboard actions so we can access them easily.  
 
-##  Step 2 : Setting Up Shared Reducer
+Here is the code below : 
 
-We will create a new folder `reducers` in store directory and then create a new file named `shared.reducers.ts` which will contain the reducer functions for each shared actions e.g. `last12MonthsBalancesLoaded`.
+```ts
+import * as DashBoardActions from './dashboard.actions';
 
-Here is the code as below : 
+export { DashBoardActions }
+```
+
+##  **Step 4: Setting Up Shared Reducer**
+We will create a new folder reducer in the store directory and then create a new file named `shared.reducers.ts` which will contain the reducer functions for each shared action e.g. `last12MonthsBalancesLoaded`.
+
+Here is the code below : 
 
 ```ts
 import {
@@ -599,29 +578,12 @@ export const sharedReducer = createReducer(
 );
 
 ```
-##  Step 3 : Setting Up Dashboard Action Types
-
-Create a new file in store folder named `action-types.ts`. In this file we will be Grouping the dashboard actions so we can access them easily.  
-
-Here is the code as below : 
-
-```ts
-// Grouping the related actions so we can access them easily. 
-// So we import everything from the auth.actions file
-import * as DashBoardActions from './dashboard.actions';
-// Now we will have these actions grouped under DashboardActions throughout the application and available through intellisense  
 
 
-export { DashBoardActions }
-```
+## **Step 5:  Setting Up Dashboard Effects**  
+Create a new file in the store folder named `dashboard.effects.ts`. this file will **contain the side effects** which is used for interacting with external resources directly through services. In our case, we will call the `getLast12MonthBalances` method of our `TransactionService` to get the data from API.
 
-## Step 4 :  Setting Up Dashboaed Effects 
-
-Create a new file in store folder named `dashboard.effects.ts`. this file will contain the side effects which is used for interacting with external resources directly through services.
-
-In our case we will calling the `getLast12MonthBalances` method of our `TransactionService` to get the data from API.
-
-Here is the code as below : 
+Here is the code below : 
 
 ```ts
 import { Injectable } from "@angular/core";
@@ -669,17 +631,16 @@ export class DashBoardEffects {
 
 ```
 
-##  Step 5 :  Setting Up Dashboard Selectors
-
-Create a new file in store folder named `dashboard.selectors.ts`. This file will contain multiple selectors that will emit a new value to the store only if the value was changed. 
+##  **Step 6:  Setting Up Dashboard Selectors**
+Create a new file in the store folder named `dashboard.selectors.ts`. This file will **contain multiple selectors** that will emit a new value to the store only if the value was changed. 
 
 Here we have multiple selectors like 
 
- `last12MonthsBalancesSelector` returns the last 12 months data.
+ `last12MonthsBalancesSelector` returns the last 12 months' data.
 
- `last6MonthsBalancesSelector` returns the last 6 months data.
+ `last6MonthsBalancesSelector` returns the last 6 months' data.
 
-Here is the code as below : 
+Here is the code below : 
 
 ```ts
 import { createFeatureSelector, createSelector } from "@ngrx/store";
@@ -707,9 +668,8 @@ export const last6MonthsBalancesSelector = createSelector(
 );
 ```
 
-## Step 6 :  Setting Up Shared Module
-Go to `shared.module.ts` and added reducer reference in imported `StoreModule` to Plugging in the reducers for root module.
-Also we will be injecting Dashboard Effects of this module in `EffectsModule` 
+## **Step 7:  Setting Up Shared Module**
+Go to `shared.module.ts` and added reducer reference in imported `StoreModule` to plugging in the reducers for the root module. Also, we will be injecting Dashboard Effects of this module in `EffectsModule` 
 
 Add `StoreModule` and `effectsModule` in imports as below 
 
@@ -722,7 +682,7 @@ Add `StoreModule` and `effectsModule` in imports as below
     MatSidenavModule,
      // sharedFeatureKey is key against which all the values for this modules will be stored in local storage store. 
     // reducers are also hooked up for this feature module
-    StoreModule.forFeature(fromShared.sharedFeatureKey, fromShared.sharedReducer, {}),
+    StoreModule.forFeature(fromShared.sharedFeatureKey, fromShared.sharedReducer, { metaReducers: fromShared.metaReducers }),
     EffectsModule.forFeature([DashBoardEffects]),
   ],
   // eslint-disable-next-line max-len
@@ -730,12 +690,9 @@ Add `StoreModule` and `effectsModule` in imports as below
 })
 ```
 
-
-
-##  Step 7 : Dispatch loadLast12MonthsBalances Action
-
-Go to `shared.component.ts` and create `Store<AppState>` object in constructor.
-Call the `loadLast12MonthsBalances` action on `ngOnInit` event as below :
+##  **Step 8 : Dispatch loadLast12MonthsBalances Action**
+Go to `shared.component.ts` and create the `Store<AppState>` object in the constructor.
+Call the `loadLast12MonthsBalances` action on the `ngOnInit` event as below :
 
 ```ts 
 export default class SharedComponent implements OnInit, OnDestroy {
@@ -759,7 +716,7 @@ export default class SharedComponent implements OnInit, OnDestroy {
         // map(state => !!state['globalState'].loggedInUser)
 
         // When application grows there will be many actions that will be emitted from store and each time the value above will be re calculated. To avoid that we use concept of selectors.
-        // select operator from ngRx does both. Mapping of values and elimination of duplicates. 
+        // select operator from NgRx does both. Mapping of values and elimination of duplicates. 
         select(isLoggedIn)
       );
 
@@ -780,7 +737,7 @@ export default class SharedComponent implements OnInit, OnDestroy {
 
 ```
 
-We will be using async pipe for isUserLoggedIn in `shared.component.html` as blow : 
+We will be using the async pipe for isUserLoggedIn in `shared.component.html` as below : 
 
 ```html
 <div class="container-fluid" style="height: 100%;">
@@ -797,13 +754,11 @@ We will be using async pipe for isUserLoggedIn in `shared.component.html` as blo
 </div>
 ```
 
-## Step 8 :  Subscribe last12MonthsBalancesSelector 
+## **Step 9 :  Subscribe last12MonthsBalancesSelector** 
+Go to `Dashboard.component.ts` and create the `Store<AppState>` object in the constructor. Subscribe to the shared App state and select `last12MonthBalancesSub`  to get the required information.
 
-Go to `Dashboard.component.ts` and create `Store<AppState>` object in constructor.
-Subscribe the shared Appstate and select `last12MonthBalancesSub`  to get the required information.
+```ts
 
-
-```ts 
 export default class DashboardComponent implements OnInit {
   lineGraphData: LineGraphData;
   lineGraphDataLast6Month: LineGraphData;
@@ -823,15 +778,14 @@ export default class DashboardComponent implements OnInit {
 }
 ```
 
-## Step 9 :  Setup Last6Months Dashboard  
-
-We will create a new component `Last6MonthDashboardComponent` in shared folder using command as below 
+## **Step 10:  Setup Last6Months Dashboard ** 
+We will create a new component `Last6MonthDashboardComponent` in the shared folder using the command below 
 
 ```
 ng g component shared/last6MonthDashboard
 ```
 
-In this component we will create `Store<AppState>` object in constructor and Subscribe the shared Appstate and select `last6MonthsBalancesSelector`  to get the required information.
+In this component, we will create `Store<AppState>` object in the constructor Subscribe to the shared App state and select `last6MonthsBalancesSelector`  to get the required information.
 
 ```ts
 export class Last6MonthDashboardComponent implements OnInit {
@@ -843,7 +797,6 @@ export class Last6MonthDashboardComponent implements OnInit {
     this.sharedStore
       .select(last6MonthsBalancesSelector)
       .subscribe((result: any) => {
-debugger;
         if (result != null) {
           this.lineGraphDataLast6Month = result;
         }
@@ -851,7 +804,7 @@ debugger;
   }
 }
 ```
-We will create a grid to show the result on UI as below :
+We will create a grid to show the result in HTML file of this component as below :
 
 ```html
  <div class="card-body" style="background: white;">
@@ -879,21 +832,20 @@ We will create a grid to show the result on UI as below :
 </div>
 ```
 
-## Step 10 : Routing for Last6Month dashboard
-
-We will create a link in our dashboard component and whenever the link is clicked we will route to Last6Month component. To setup the routing go to `app-routing.module.ts` and add a new routing as below :
+## **Step 11: Routing for Last6Month dashboard**
+We will create a link in our dashboard component and whenever the link is clicked we will route to the Last6Month component. To set up the route go to the `app-routing.module.ts` and add a new route as below :
 
 ```ts
 { path: 'last6MonthsRecord', component: Last6MonthDashboardComponent }
 ```
 
-To setup the link on Dashboard component, go to dashboard component and create a link as below :
+To set up the link on the Dashboard component, go to the dashboard component and create a link as below :
 
 ```html
 <a [routerLink]="['/last6MonthsRecord']">6 Months Records</a>
 ```
 
-Run the application and see its working as below
+Run the application and see it working as below
 
 ![final](https://user-images.githubusercontent.com/100709775/171859407-94636b94-e2a2-4913-bb3c-d4cdecc35588.gif)
 
